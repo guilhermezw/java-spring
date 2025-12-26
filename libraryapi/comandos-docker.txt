@@ -1,0 +1,8 @@
+// Rodar container pgadmin 4
+docker run --name pgadmin4 -p 15432:80 -e PGADMIN_DEFAULT_EMAIL=admin@admin.com -e PGADMIN_DEFAULT_PASSWORD=admin dpage/pgadmin4
+
+// Rodar container postgres version 16.3
+docker run --name librarydb -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=library postgres:16.3
+
+docker network create library-network
+62c8d2121cf619fe1a831fa7e0d2593a3aa96a36772ab84a77216a432076d036

@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: arquiteturaspring
+  jpa:
+    show-sql: true
+  main:
+    lazy-initialization: false
+app:
+  montadora:
+    motor-padrao: 120
+  config:
+    variavel: Arquitetura Spring
+    text: Projeto sobre arquitetura spring.
