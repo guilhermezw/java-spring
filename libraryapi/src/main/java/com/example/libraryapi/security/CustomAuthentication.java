@@ -1,0 +1,62 @@
+package com.example.libraryapi.security;
+
+import com.example.libraryapi.model.Usuario;
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
+
+public class CustomAuthentication implements Authentication {
+
+    private Usuario usuario;
+
+    public CustomAuthentication(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    @Override
+    public Collection<GrantedAuthority> getAuthorities() {
+        return this.usuario
+                .getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public @Nullable Object getCredentials() {
+        return null;
+    }
+
+    @Override
+    public @Nullable Object getDetails() {
+        return usuario;
+    }
+
+    @Override
+    public @Nullable Object getPrincipal() {
+        return usuario;
+    }
+
+    @Override
+    public boolean isAuthenticated() {
+        return true;
+    }
+
+    @Override
+    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+
+    }
+
+    @Override
+    public String getName() {
+        return usuario.getLogin();
+    }
+}

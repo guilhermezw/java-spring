@@ -45,8 +45,7 @@ public class Livro {
     private LocalDateTime dataAtualizacao;
 
     @ManyToOne
-    @JoinColumn
-    @Column(name = "id_usuario")
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @ManyToOne (
