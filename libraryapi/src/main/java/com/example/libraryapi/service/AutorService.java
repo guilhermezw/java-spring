@@ -7,7 +7,6 @@ import com.example.libraryapi.repository.AutorRepository;
 import com.example.libraryapi.repository.LivroRepository;
 import com.example.libraryapi.security.SecurityService;
 import com.example.libraryapi.validator.AutorValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;

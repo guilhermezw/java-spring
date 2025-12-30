@@ -13,3 +13,10 @@ spring:
       ddl-auto: none
     properties:
       hibernate.format_sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 8134547136-0il8l1u3flb6phkqdb42qb4pmscmr4u4.apps.googleusercontent.com
+            client-secret: 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
