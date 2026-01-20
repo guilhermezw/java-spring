@@ -1,6 +1,7 @@
 package com.example.libraryapi.config;
 
 import com.example.libraryapi.security.CustomUserDetailsService;
+import com.example.libraryapi.security.LoginSocialSuccessHandler;
 import com.example.libraryapi.service.UsuarioService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,14 +23,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
     @Bean
-    public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain (HttpSecurity http , LoginSocialSuccessHandler successHandler) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
-                //.formLogin(configurer ->{
-                //  configurer.loginPage("/login");
-                // })
-                .formLogin(Customizer.withDefaults())
+                .formLogin(configurer ->{
+                  configurer.loginPage("/login");
+                 })
+                // .formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/login/**").permitAll();
                     // authorize.requestMatchers(HttpMethod.POST , "/autores/**").hasRole("ADMIN");
@@ -38,10 +40,13 @@ public class SecurityConfiguration {
                     authorize.requestMatchers(HttpMethod.POST , "/usuarios/**").permitAll();
                     // authorize.requestMatchers("/autores/**").hasRole("ADMIN"); // Selecionar apenas uma ROLE
                     // authorize.requestMatchers("/livros/**").hasAnyRole("USER" , "ADMIN"); // Selecionar varias ROLE
-
                     authorize.anyRequest().authenticated();
                 })
-                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(oauth2 -> {
+                    oauth2
+                            .loginPage("/login")
+                            .successHandler(successHandler);
+                })
                 .build();
     }
 
@@ -50,7 +55,7 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder(10);
     }
 
-    @Bean
+    // @Bean
     public UserDetailsService userDetailsService (UsuarioService usuarioService){
 
         /**
@@ -70,7 +75,12 @@ public class SecurityConfiguration {
          */
 
         return new CustomUserDetailsService(usuarioService);
-
-
     }
+
+
+    @Bean
+    public GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        return new GrantedAuthorityDefaults("");
+    }
+
 }

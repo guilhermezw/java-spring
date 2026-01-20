@@ -3,7 +3,6 @@ package com.example.libraryapi.validator;
 import com.example.libraryapi.exception.RegistroDuplicadoException;
 import com.example.libraryapi.model.Autor;
 import com.example.libraryapi.repository.AutorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

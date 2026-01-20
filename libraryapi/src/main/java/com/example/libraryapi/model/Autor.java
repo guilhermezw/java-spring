@@ -1,6 +1,5 @@
 package com.example.libraryapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -42,7 +41,7 @@ public class Autor {
     private LocalDateTime dataAtualizacao;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
 
     public Autor() {

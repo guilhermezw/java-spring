@@ -4,7 +4,6 @@ import com.example.libraryapi.exception.CampoInvalidadoException;
 import com.example.libraryapi.exception.RegistroDuplicadoException;
 import com.example.libraryapi.model.Livro;
 import com.example.libraryapi.repository.LivroRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
