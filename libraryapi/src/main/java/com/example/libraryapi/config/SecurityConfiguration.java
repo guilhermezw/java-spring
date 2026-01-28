@@ -13,8 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -47,13 +47,18 @@ public class SecurityConfiguration {
                             .loginPage("/login")
                             .successHandler(successHandler);
                 })
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder (){
-        return new BCryptPasswordEncoder(10);
-    }
+    /**
+     *
+     * @Bean
+     *     public PasswordEncoder passwordEncoder (){
+     *         return new BCryptPasswordEncoder(10);
+     *     }
+     */
+
 
     // @Bean
     public UserDetailsService userDetailsService (UsuarioService usuarioService){
@@ -77,10 +82,29 @@ public class SecurityConfiguration {
         return new CustomUserDetailsService(usuarioService);
     }
 
-
+    // Configura o prefixo Role
     @Bean
     public GrantedAuthorityDefaults grantedAuthorityDefaults() {
         return new GrantedAuthorityDefaults("");
+    }
+
+    // Configura, No Token JWT, O prefixo Scope
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+
+        JwtGrantedAuthoritiesConverter authoritiesConverter =
+                new JwtGrantedAuthoritiesConverter();
+
+        authoritiesConverter.setAuthorityPrefix(""); // remove SCOPE_
+        authoritiesConverter.setAuthoritiesClaimName("scope");
+        // ou "roles", depende do seu JWT
+
+        JwtAuthenticationConverter converter =
+                new JwtAuthenticationConverter();
+
+        converter.setJwtGrantedAuthoritiesConverter(authoritiesConverter);
+
+        return converter;
     }
 
 }
