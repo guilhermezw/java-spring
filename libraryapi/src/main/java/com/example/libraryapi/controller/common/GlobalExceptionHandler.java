@@ -5,6 +5,7 @@ import com.example.libraryapi.controller.dto.ErroResposta;
 import com.example.libraryapi.exception.CampoInvalidadoException;
 import com.example.libraryapi.exception.OperacaoNaoPermitidaException;
 import com.example.libraryapi.exception.RegistroDuplicadoException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -19,10 +20,12 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErroResposta handMethodArgumentNotValidException(MethodArgumentNotValidException erro){
+        log.error("Erro de validação {}" , erro.getMessage());
         List<FieldError> fieldErrors = erro.getFieldErrors();
         List<ErroCampo> listaErros = fieldErrors
                 .stream()
@@ -52,6 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErroResposta handleErrosNaoTratado(RuntimeException erro){
+        log.error("Erro inesperado: {}", erro.getMessage());
         return new ErroResposta(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ocorreu um erro inesperado. Entre em contato com o suporte" , List.of());
     }
 

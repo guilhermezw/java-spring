@@ -29,7 +29,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain (HttpSecurity http , LoginSocialSuccessHandler successHandler , JwtCustomAuthenticationFilter jwtCustomAuthenticationFilter) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults())
+                // .httpBasic(Customizer.withDefaults())
                 .formLogin(configurer ->{
                   configurer.loginPage("/login");
                  })
@@ -64,7 +64,8 @@ public class SecurityConfiguration {
                     "/swagger-resources/**",
                     "/swagger-ui.html",
                     "/swagger-ui./**",
-                    "/webjars/**"
+                    "/webjars/**",
+                    "/actuator/**"
             );
 
     }
