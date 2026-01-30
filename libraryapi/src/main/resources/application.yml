@@ -1,6 +1,8 @@
 spring:
   application:
     name: libraryapi
+  profiles:
+    active: production
   output:
     ansi:
       enabled: ALWAYS
@@ -54,3 +56,23 @@ management:
 
 springdoc:
   override-with-generic-response: false
+
+# production
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+    jpa:
+      show-sql: false
+
+# homologacao
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+    jpa:
+      show-sql: false
+    datasource:
+      url: jdbc:postgresql://localhost:5432/library
