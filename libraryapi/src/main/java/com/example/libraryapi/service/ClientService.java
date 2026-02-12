@@ -3,7 +3,6 @@ package com.example.libraryapi.service;
 import com.example.libraryapi.model.Client;
 import com.example.libraryapi.repository.ClientRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password4j.BcryptPassword4jPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
