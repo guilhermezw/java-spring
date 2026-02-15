@@ -4,7 +4,7 @@ WORKDIR /build
 
 COPY . .
 
-RUN mvn clean package -DskipTest
+RUN mvn clean package -DskipTests
 
 # run
 FROM amazoncorretto:21.0.5
@@ -16,7 +16,7 @@ EXPOSE 9090
 
 ENV DATASOURCE_URL=''
 ENV DATASOURCE_USERNAME=''
-ENV DATASOURCE_URL=''
+ENV DATASOURCE_PASSWORD=''
 ENV GOOGLE_CLIENT_ID='client_id'
 ENV GOOGLE_CLIENT_SECRET='client_id'
 
