@@ -19,20 +19,18 @@ public class UserModel {
 
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "tb_user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private List<UserRole> roles;
+    private UserRole role;
 
 
     public UserModel() {
     }
 
-    public UserModel(UUID id, String email, String password, List<UserRole> roles) {
+    public UserModel(UUID id, String email, String password, UserRole role) {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.roles = roles;
+        this.role = role;
     }
 
     public UUID getId() {
@@ -59,11 +57,11 @@ public class UserModel {
         this.password = password;
     }
 
-    public List<UserRole> getRoles() {
-        return roles;
+    public UserRole getRole() {
+        return role;
     }
 
-    public void setRoles(List<UserRole> roles) {
-        this.roles = roles;
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }

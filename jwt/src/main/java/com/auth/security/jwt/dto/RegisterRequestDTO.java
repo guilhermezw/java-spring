@@ -17,12 +17,12 @@ public class RegisterRequestDTO {
     private String password;
 
     @NotNull
-    private List<UserRole> roles;
+    private UserRole role;
 
-    public RegisterRequestDTO(String email, String password, List<UserRole> roles) {
+    public RegisterRequestDTO(String email, String password, UserRole role) {
         this.email = email;
         this.password = password;
-        this.roles = roles;
+        this.role = role;
     }
 
     public @NotBlank @Email String getEmail() {
@@ -41,11 +41,11 @@ public class RegisterRequestDTO {
         this.password = password;
     }
 
-    public @NotNull List<UserRole> getRoles() {
-        return roles;
+    public @NotNull UserRole getRole() {
+        return role;
     }
 
-    public void setRoles(@NotNull List<UserRole> roles) {
-        this.roles = roles;
+    public void setRole(@NotNull UserRole role) {
+        this.role = role;
     }
 }

@@ -38,12 +38,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers("/auth").permitAll()
-
-                                .requestMatchers("/h2-console/**").permitAll()
+                        auth -> auth.requestMatchers("/auth/**").permitAll()
                                 .anyRequest().authenticated())
 
-                .oauth2ResourceServer(conf -> conf.jwt(Customizer.withDefaults()));
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
                 return http.build();
     }
 
