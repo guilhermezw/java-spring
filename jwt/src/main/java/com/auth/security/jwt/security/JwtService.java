@@ -23,16 +23,18 @@ public class JwtService {
         Instant now = Instant.now();
         long expiry = 3600L;
 
-        String scopes = authentication.getAuthorities().stream()
+        String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+                .map(authoridade -> authoridade.replace("ROLE_", ""))
+                .findFirst()
+                .orElse("");
 
         var claims = JwtClaimsSet.builder()
-                .issuer("spring-security-jwt")
+                .issuer("spring.security.jwt")
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiry))
                 .subject(authentication.getName())
-                .claim("roles" , scopes)
+                .claim("role" , role)
                 .build();
 
         return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

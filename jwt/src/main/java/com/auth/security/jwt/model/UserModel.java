@@ -22,15 +22,18 @@ public class UserModel {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    private boolean active = false;
+
 
     public UserModel() {
     }
 
-    public UserModel(UUID id, String email, String password, UserRole role) {
+    public UserModel(UUID id, String email, String password, UserRole role, boolean active) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.active = active;
     }
 
     public UUID getId() {
@@ -63,5 +66,13 @@ public class UserModel {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

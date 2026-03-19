@@ -2,6 +2,7 @@ package com.auth.security.jwt.service;
 
 import com.auth.security.jwt.dto.LoginRequestDTO;
 import com.auth.security.jwt.dto.RegisterRequestDTO;
+import com.auth.security.jwt.exception.custom.AcessoNegadoException;
 import com.auth.security.jwt.model.UserModel;
 import com.auth.security.jwt.repository.UserRepository;
 import com.auth.security.jwt.security.JwtService;
@@ -18,6 +19,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final BCryptPasswordEncoder passwordEncoder;
 
+
     public AuthService(JwtService jwtService, UserRepository userRepository, AuthenticationManager authenticationManager, BCryptPasswordEncoder passwordEncoder) {
         this.jwtService = jwtService;
         this.userRepository = userRepository;
@@ -29,6 +31,10 @@ public class AuthService {
         UserModel user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        if(!user.isActive()){
+            throw new AcessoNegadoException("Your account is inactive.");
+        }
+
         if(!passwordEncoder.matches(dto.getPassword() , user.getPassword())){
             throw new RuntimeException("Email or password invalid");
         }
@@ -37,7 +43,6 @@ public class AuthService {
                 dto.getEmail(),
                 dto.getPassword()
         );
-
 
         var authentication = authenticationManager.authenticate(authToken);
         return jwtService.generateToken(authentication);
