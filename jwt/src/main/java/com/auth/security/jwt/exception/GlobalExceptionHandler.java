@@ -32,14 +32,14 @@ public class GlobalExceptionHandler {
 
     }
 
+
+
     @ExceptionHandler({
             AcessoNegadoException.class,
-            AccessDeniedException.class,
-            AuthorizationDeniedException.class,
     })
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErroResposta handlerForbiddenException(Exception erro){
-        return ErroResposta.resposta(HttpStatus.FORBIDDEN , "Access denied: You do not have permission. " + erro.getMessage());
+    public ErroResposta handlerForbiddenException(RuntimeException erro){
+        return ErroResposta.resposta(HttpStatus.FORBIDDEN , erro.getMessage());
     }
 
     @ExceptionHandler({
@@ -56,18 +56,17 @@ public class GlobalExceptionHandler {
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErroResposta handlerBadRequestException(RuntimeException erro) {
-        return ErroResposta.respostaPadrao(erro.getMessage());
+        return ErroResposta.resposta(HttpStatus.BAD_REQUEST , erro.getMessage());
     }
+
 
     @ExceptionHandler({
             TokenInvalidoException.class,
             UsuarioNaoAutenticadoException.class,
-            InvalidBearerTokenException.class,
-            AuthenticationException.class
     })
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ErroResposta handlerUnauthorizedException(Exception erro){
-        return ErroResposta.resposta(HttpStatus.UNAUTHORIZED , "Invalid or expired token.");
+    public ErroResposta handlerUnauthorizedException(RuntimeException erro){
+        return ErroResposta.resposta(HttpStatus.UNAUTHORIZED , erro.getMessage());
     }
 
     @ExceptionHandler({
@@ -75,7 +74,7 @@ public class GlobalExceptionHandler {
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErroResposta handlerConflictException(RuntimeException erro) {
-        return ErroResposta.conflito(erro.getMessage());
+        return ErroResposta.resposta(HttpStatus.CONFLICT , erro.getMessage());
     }
 
     @ExceptionHandler(CampoInvalidoException.class)
@@ -90,7 +89,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErroResposta handlerErroInterno(Exception erro) {
+    public ErroResposta handlerErroInterno(Exception ex) {
         return new ErroResposta(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Ocorreu um erro inesperado no servidor. Contate o suporte.",
@@ -98,6 +97,28 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler({
+            InvalidBearerTokenException.class
+    })
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErroResposta handlerSecurityUnauthorizedException(Exception ex){
+        return ErroResposta.resposta(HttpStatus.UNAUTHORIZED , "Token inválido ou expirado.");
+    }
 
+    @ExceptionHandler({
+            AccessDeniedException.class,
+            AuthorizationDeniedException.class,
+    })
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErroResposta handlerSecurityForbiddenException(Exception ex){
+        return ErroResposta.resposta(HttpStatus.FORBIDDEN , "Acesso negado: Você não tem permissão.");
+    }
 
+    @ExceptionHandler({
+            AuthenticationException.class
+    })
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErroResposta handlerAuthException(Exception ex){
+        return ErroResposta.resposta(HttpStatus.CONFLICT, "Email ou senha inválidos");
+    }
 }

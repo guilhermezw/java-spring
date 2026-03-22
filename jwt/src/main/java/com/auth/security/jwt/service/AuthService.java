@@ -35,10 +35,6 @@ public class AuthService {
             throw new AcessoNegadoException("Your account is inactive.");
         }
 
-        if(!passwordEncoder.matches(dto.getPassword() , user.getPassword())){
-            throw new RuntimeException("Email or password invalid");
-        }
-
         var authToken =  new UsernamePasswordAuthenticationToken(
                 dto.getEmail(),
                 dto.getPassword()

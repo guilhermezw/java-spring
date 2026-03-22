@@ -8,20 +8,23 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
 
-    private final JwtEncoder encoder;
+    private final JwtEncoder jwtEncoder;
 
-    public JwtService(JwtEncoder encoder) {
-        this.encoder = encoder;
+    public JwtService(JwtEncoder jwtEncoder) {
+        this.jwtEncoder = jwtEncoder;
     }
 
     public String generateToken(Authentication authentication){
         Instant now = Instant.now();
         long expiry = 3600L;
+
+        UserAuthenticated user = (UserAuthenticated) authentication.getPrincipal();
 
         String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -31,12 +34,13 @@ public class JwtService {
 
         var claims = JwtClaimsSet.builder()
                 .issuer("spring.security.jwt")
+                .audience(List.of("api.security.jwt"))
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiry))
-                .subject(authentication.getName())
+                .subject(String.valueOf(user.getUserId()))
                 .claim("role" , role)
                 .build();
 
-        return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 }

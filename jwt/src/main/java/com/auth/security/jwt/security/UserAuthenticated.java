@@ -7,32 +7,41 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public class UserAuthenticated implements UserDetails {
 
-    private final UserModel user;
+    private final UUID id;
+    private final String email;
+    private final String password;
+    private final boolean active;
+    private final String role;
 
     public UserAuthenticated(UserModel user) {
-        this.user = user;
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.active = user.isActive();
+        this.role = user.getRole().name();
     }
 
-    public String getUserId() {
-        return user.getId().toString();
+    public UUID getUserId() {
+        return id;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getId().toString();
+        return email;
     }
 
     @Override
@@ -52,6 +61,6 @@ public class UserAuthenticated implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return user.isActive();
+        return active;
     }
 }

@@ -13,10 +13,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -26,6 +25,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -56,17 +56,31 @@ public class SecurityConfig {
 
 
                 .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(authenticationEntryPoint())
                         .accessDeniedHandler(accessDeniedHandler())
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
-
                 );
                 return http.build();
     }
 
     @Bean
     JwtDecoder jwtDecoder(){
-        return NimbusJwtDecoder.withPublicKey(key).build();
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withPublicKey(key).build();
+
+        OAuth2TokenValidator<Jwt> withTimestamp = new JwtTimestampValidator();
+        OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer("spring.security.jwt");
+
+        OAuth2TokenValidator<Jwt> withAudience = new JwtClaimValidator<List<String>>(
+                "aud", aud -> aud != null && aud.contains("api.security.jwt")
+        );
+
+        OAuth2TokenValidator<Jwt> validator = new DelegatingOAuth2TokenValidator<>(
+                withTimestamp, withIssuer, withAudience
+        );
+
+        jwtDecoder.setJwtValidator(validator);
+
+        return jwtDecoder;
     }
 
     @Bean
